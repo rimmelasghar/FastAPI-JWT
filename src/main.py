@@ -7,10 +7,10 @@ app = FastAPI(
     docs_url='/docs',
     version="0.1.0",
     openapi_url="/openapi.json", 
-    # servers=[
-    #     {"url": "https://apiwithkey.onrender.com", "description": "Render Development Server"},
+    servers=[
+        {"url": "https://secondapi-0tt2.onrender.com", "description": "Render Development Server"},
         
-    # ],
+    ],
 )
 
 app.include_router(auth_router.router)
