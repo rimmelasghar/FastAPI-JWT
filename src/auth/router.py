@@ -9,17 +9,16 @@ from . import validator
 from src.auth.models import User
 from sqlalchemy.orm import Session
 from typing import List
-
-
+from src.auth.forms import CustomOAuth2PasswordRequestForm
 
 router = APIRouter(tags=['Auth'], prefix='')
 
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
-async def create_user_registration(request: schemas.User,
+def create_user_registration(request: schemas.User,
                                    database: Session = Depends(db.get_db)):
 
-    user = await validator.verify_email_exist(request.email, database)
+    user = validator.verify_email_exist(request.email, database)
 
     if user:
         raise HTTPException(
@@ -27,24 +26,25 @@ async def create_user_registration(request: schemas.User,
             detail="This user with this email already exists in the system."
         )
 
-    new_user = await services.new_user_register(request, database)
+    new_user = services.new_user_register(request, database)
     return new_user
 
 
 @router.get('/', response_model=List[schemas.DisplayAccount])
-async def get_all_users(database: Session = Depends(db.get_db)):
-    return await services.all_users(database)
+def get_all_users(database: Session = Depends(db.get_db)):
+    return services.all_users(database)
 
 
 @router.post('/token')
-def login(request: schemas.Login,
+def login(
+    request: schemas.Login,
           database: Session = Depends(db.get_db)):    
-    user = database.query(User).filter(User.email == request.email).first()
+    user = database.query(User).filter(User.email == request.client_id).first()
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
-    if not utils.verify_password(request.password, user.password):
+    if not utils.verify_password(request.client_secret, user.password):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid Password")
 
@@ -54,5 +54,5 @@ def login(request: schemas.Login,
 
 
 @router.get('/profile', response_model=schemas.DisplayAccount)
-async def get_profile(database: Session = Depends(db.get_db), current_user: schemas.User = Depends(get_current_user)):
-    return await services.get_profile(database, current_user)
+def get_profile(database: Session = Depends(db.get_db), current_user: schemas.User = Depends(get_current_user)):
+    return services.get_profile(database, current_user)

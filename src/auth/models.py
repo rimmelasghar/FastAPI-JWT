@@ -14,9 +14,6 @@ class User(Base):
     lastName = Column(String(50))
     password = Column(String(255))
 
-    # blogs = relationship("Blog", back_populates="author", primaryjoin="User.id == Blog.author_id")
-
-
     def __init__(self, username, email, role, password, firstName, lastName, *args, **kwargs):
         self.username = username
         self.email = email

@@ -9,6 +9,7 @@ SECRET_KEY = "20a9bfa73de3f29b6b7a01d4fc84bb569f1b7e8ac7f83c77c62a603f2bf9f5ff"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 def create_access_token(data: dict):
     to_encode = data.copy()
@@ -16,7 +17,6 @@ def create_access_token(data: dict):
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
-
 
 def verify_token(token: str, credentials_exception):
     try:
@@ -29,10 +29,6 @@ def verify_token(token: str, credentials_exception):
         return token_data
     except:
         raise credentials_exception
-
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
 
 def get_current_user(data: str = Depends(oauth2_scheme)):
     credentials_exception = HTTPException(

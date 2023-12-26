@@ -1,6 +1,8 @@
 import email
 from typing import Optional, List
 from pydantic import BaseModel, constr, EmailStr
+from typing import Any, Dict, List, Optional, Union
+from fastapi import Form
 
 class User(BaseModel):
     username: constr(min_length=2, max_length=50)
@@ -26,16 +28,16 @@ class DisplayAccount(BaseModel):
     class Config:
         orm_mode = True
 
-
 class Login(BaseModel):
-    email: str
-    password: str
-
+    # email: str
+    # password: str
+    scope: str = Form(""),
+    client_id: Optional[str] = Form(None),
+    client_secret: Optional[str] = Form(None)
 
 class Token(BaseModel):
     access_token: str
     token_type: str
-
 
 class TokenData(BaseModel):
     email: Optional[str] = None

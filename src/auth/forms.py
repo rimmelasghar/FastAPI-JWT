@@ -10,7 +10,7 @@ class CustomOAuth2PasswordRequestForm():
         password: Optional[str] = Form(None),
         scope: str = Form(""),
         client_id: Optional[str] = Form(None),
-        client_secret: Optional[str] = Form(None),
+        client_secret: Optional[str] = Form(None)
     ):
         self.grant_type = grant_type
         self.username = username

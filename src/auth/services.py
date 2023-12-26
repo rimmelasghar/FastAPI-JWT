@@ -5,7 +5,7 @@ from . import schemas
 from . import models
 
 
-async def new_user_register(request: schemas.BaseModel, database) -> models.User:
+def new_user_register(request: schemas.BaseModel, database) -> models.User:
     new_user = models.User(username=request.username, email=request.email,
                            role=request.role, 
                            password=request.password,
@@ -19,12 +19,12 @@ async def new_user_register(request: schemas.BaseModel, database) -> models.User
     return new_user
 
 
-async def all_users(database) -> List[models.User]:
+def all_users(database) -> List[models.User]:
     users = database.query(models.User).all()
     return users
 
 
-async def get_user_by_id(user_id, database) -> Optional[models.User]:
+def get_user_by_id(user_id, database) -> Optional[models.User]:
     user_info = database.query(models.User).get(user_id)
 
     if not user_info:
@@ -36,6 +36,6 @@ async def get_user_by_id(user_id, database) -> Optional[models.User]:
     return user_info
 
 
-async def get_profile(database, current_user) -> models.User:
+def get_profile(database, current_user) -> models.User:
     user = database.query(models.User).filter(models.User.email == current_user.email).first()
     return user

@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from fastapi import Depends
-from app.model import *
-from app.schema import *
+from src.student.models import *
+from src.student.schemas import *
 from fastapi import HTTPException
 
 def create_item(db: Session, student: StudentCreate):
@@ -40,3 +40,6 @@ def delete_student(db: Session,student_id:int):
     db.delete(student)
     db.commit() 
     return student
+
+def get_all_students_behaviour(db: Session):
+    return db.query(Behaviour).all()
